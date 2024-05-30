@@ -8,7 +8,7 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<RootNamespace>Meshoptimizer</RootNamespace>
 	</PropertyGroup>
-	
+
 	<PropertyGroup>
 		<GenerateDocumentationFile>false</GenerateDocumentationFile>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -17,16 +17,20 @@
 		<PackageREADMEFile>README.md</PackageREADMEFile>
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageId>MeshoptimizerSharp</PackageId>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<Authors>KalvinCK</Authors>
 		<Description>C# bindings for https://github.com/zeux/meshoptimizer</Description>
 		<PackageTags>c# bindings meshoptimizer graphics game</PackageTags>
 		<RepositoryUrl></RepositoryUrl>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 		<None Include="..\icon.png" Pack="true" PackagePath="\" />
 		<None Include="..\README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\.editorconfig" Link=".editorconfig" />
 	</ItemGroup>
 
 	<ItemGroup>

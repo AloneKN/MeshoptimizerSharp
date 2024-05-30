@@ -27,7 +27,7 @@ public static unsafe partial class Meshopt
 
     /// <inheritdoc cref="GenerateVertexRemap(ref uint, in uint, nuint, void*, nuint, nuint)"/>
     [LibraryImport(LIBRARY_NAME, EntryPoint = "meshopt_generateVertexRemap")]
-    public static partial nuint GenerateVertexRemap(ref uint destination, in IntPtr indices, nuint index_count, void* vertices, nuint vertex_count, nuint vertex_size);
+    public static partial nuint GenerateVertexRemap(ref uint destination, IntPtr indices, nuint index_count, void* vertices, nuint vertex_count, nuint vertex_size);
 
     /// <summary>
     /// Generates a vertex remap table from multiple vertex streams and an optional index buffer and returns number of unique vertices.<para/>
@@ -48,7 +48,7 @@ public static unsafe partial class Meshopt
 
     /// <inheritdoc cref="GenerateVertexRemapMulti(ref uint, in uint, nuint, nuint, in MeshoptStream, nuint)"/>
     [LibraryImport(LIBRARY_NAME, EntryPoint = "meshopt_generateVertexRemapMulti")]
-    public static partial nuint GenerateVertexRemapMulti(ref uint destination, in IntPtr indices, nuint index_count, nuint vertex_count, in MeshoptStream streams, nuint stream_count);
+    public static partial nuint GenerateVertexRemapMulti(ref uint destination, IntPtr indices, nuint index_count, nuint vertex_count, in MeshoptStream streams, nuint stream_count);
 
 
     /// <summary>
@@ -153,7 +153,7 @@ public static unsafe partial class Meshopt
 
     /// <inheritdoc cref="RemapIndexBuffer(ref uint, in uint, nuint, in uint)"/>
     [LibraryImport(LIBRARY_NAME, EntryPoint = "meshopt_remapIndexBuffer")]
-    public static partial void RemapIndexBuffer(ref uint destination, in IntPtr indices, nuint index_count, in uint remap);
+    public static partial void RemapIndexBuffer(ref uint destination, IntPtr indices, nuint index_count, in uint remap);
     #endregion
 
     #region Optimize
@@ -213,7 +213,7 @@ public static unsafe partial class Meshopt
     /// <summary>
     /// Vertex fetch cache optimizer.<para/>
     /// Reorders vertices and changes indices to reduce the amount of GPU memory fetches during vertex processing.
-    /// Returns the number of unique vertices, which is the same as input vertex count unless some vertices are unused.
+    /// Which is the same as input vertex count unless some vertices are unused.
     /// This function works for a single vertex stream; for multiple vertex streams, <seealso cref="OptimizeVertexFetchRemap(ref uint, in uint, nuint, nuint)"/> + <seealso cref="RemapVertexBuffer(void*, void*, nuint, nuint, in uint)"/> for each stream.
     /// </summary>
     /// <param name="destination">Must contain enough space for the resulting remap table (<paramref name="vertex_count"/> elements).</param>
@@ -229,7 +229,7 @@ public static unsafe partial class Meshopt
     /// <summary>
     /// Vertex fetch cache optimizer.<para/>
     /// Generates vertex remap to reduce the amount of GPU memory fetches during vertex processing
-    /// returns the number of unique vertices, which is the same as input vertex count unless some vertices are unused
+    /// Which is the same as input vertex count unless some vertices are unused
     /// the resulting remap table should be used to reorder vertex/index buffers using <seealso cref="RemapVertexBuffer(void*, void*, nuint, nuint, in uint)"/>/<seealso cref="RemapIndexBuffer(ref uint, in nint, nuint, in uint)"/>.
     /// </summary>
     /// <param name="destination">Must contain enough space for the resulting remap table (<paramref name="vertex_count"/> elements)</param>
@@ -502,7 +502,7 @@ public static unsafe partial class Meshopt
 
     /// <inheritdoc cref="SimplifyWithAttributes(ref uint, in uint, nuint, in float, nuint, nuint, in float, nuint, in float, nuint, in byte, nuint, float, uint, out float)"/>
     [LibraryImport(LIBRARY_NAME, EntryPoint = "meshopt_simplifyWithAttributes")]
-    public static partial nuint SimplifyWithAttributes(ref uint destination, in uint indices, nuint index_count, in float vertex_positions, nuint vertex_count, nuint vertex_positions_stride, in float vertex_attributes, nuint vertex_attributes_stride, in float attribute_weights, nuint attribute_count, in IntPtr vertex_lock, nuint target_index_count, float target_error, uint options, IntPtr result_error);
+    public static partial nuint SimplifyWithAttributes(ref uint destination, in uint indices, nuint index_count, in float vertex_positions, nuint vertex_count, nuint vertex_positions_stride, in float vertex_attributes, nuint vertex_attributes_stride, in float attribute_weights, nuint attribute_count, IntPtr vertex_lock, nuint target_index_count, float target_error, uint options, IntPtr result_error);
 
     /// <inheritdoc cref="SimplifyWithAttributes(ref uint, in uint, nuint, in float, nuint, nuint, in float, nuint, in float, nuint, in byte, nuint, float, uint, out float)"/>
     [LibraryImport(LIBRARY_NAME, EntryPoint = "meshopt_simplifyWithAttributes")]
@@ -510,7 +510,7 @@ public static unsafe partial class Meshopt
 
     /// <inheritdoc cref="SimplifyWithAttributes(ref uint, in uint, nuint, in float, nuint, nuint, in float, nuint, in float, nuint, in byte, nuint, float, uint, out float)"/>
     [LibraryImport(LIBRARY_NAME, EntryPoint = "meshopt_simplifyWithAttributes")]
-    public static partial nuint SimplifyWithAttributes(ref uint destination, in uint indices, nuint index_count, in float vertex_positions, nuint vertex_count, nuint vertex_positions_stride, in float vertex_attributes, nuint vertex_attributes_stride, in float attribute_weights, nuint attribute_count, in IntPtr vertex_lock, nuint target_index_count, float target_error, uint options, out float result_error);
+    public static partial nuint SimplifyWithAttributes(ref uint destination, in uint indices, nuint index_count, in float vertex_positions, nuint vertex_count, nuint vertex_positions_stride, in float vertex_attributes, nuint vertex_attributes_stride, in float attribute_weights, nuint attribute_count, IntPtr vertex_lock, nuint target_index_count, float target_error, uint options, out float result_error);
 
     /// <summary>
     /// Experimental: Mesh simplifier (sloppy).<para/>
@@ -557,7 +557,7 @@ public static unsafe partial class Meshopt
 
     /// <inheritdoc cref="SimplifyPoints(ref uint, in float, nuint, nuint, in float, nuint, float, nuint)"/>
     [LibraryImport(LIBRARY_NAME, EntryPoint = "meshopt_simplifyPoints")]
-    public static partial nuint SimplifyPoints(ref uint destination, in float vertex_positions, nuint vertex_count, nuint vertex_positions_stride, in IntPtr vertex_colors, nuint vertex_colors_stride, float color_weight, nuint target_vertex_count);
+    public static partial nuint SimplifyPoints(ref uint destination, in float vertex_positions, nuint vertex_count, nuint vertex_positions_stride, IntPtr vertex_colors, nuint vertex_colors_stride, float color_weight, nuint target_vertex_count);
 
     /// <summary>
     /// Absolute error must be <c>divided</c> by the scaling factor before passing it to <seealso cref="Simplify(ref uint, in uint, nuint, in float, nuint, nuint, nuint, float, uint, out float)"/> as <c>target_error</c>.

@@ -13,7 +13,7 @@ public static unsafe partial class Meshopt
     /// <param name="vertices"></param>
     /// <returns><inheritdoc cref="GenerateVertexRemap(ref uint, in nint, nuint, void*, nuint, nuint)"/></returns>
     public static int GenerateVertexRemap<TVertex>(out Span<uint> remap, ReadOnlySpan<uint> indices, ReadOnlySpan<TVertex> vertices)
-        where TVertex : unmanaged
+        where TVertex : struct
     {
         remap = new uint[indices.Length];
         return GenerateVertexRemap(remap, indices, vertices);
@@ -28,7 +28,7 @@ public static unsafe partial class Meshopt
     /// <param name="vertices"></param>
     /// <returns><inheritdoc cref="GenerateVertexRemap(ref uint, in nint, nuint, void*, nuint, nuint)"/></returns>
     public static int GenerateVertexRemap<TVertex>(Span<uint> destination, ReadOnlySpan<uint> indices, ReadOnlySpan<TVertex> vertices)
-        where TVertex : unmanaged
+        where TVertex : struct
     {
         fixed (void* ptr = vertices)
         {
@@ -44,13 +44,13 @@ public static unsafe partial class Meshopt
     /// <param name="vertices"></param>
     /// <returns><inheritdoc cref="GenerateVertexRemap(ref uint, in uint, nuint, void*, nuint, nuint)"/></returns>
     public static int GenerateVertexRemap<TVertex>(out Span<uint> remappedResult, ReadOnlySpan<TVertex> vertices)
-        where TVertex : unmanaged
+        where TVertex : struct
     {
-        remappedResult = new uint[vertices.Length * 3];
+        remappedResult = new uint[vertices.Length];
 
         fixed (void* ptr = vertices)
         {
-            return (int)GenerateVertexRemap(ref remappedResult[0], IntPtr.Zero, (nuint)vertices.Length * 3, ptr, (nuint)vertices.Length, (nuint)sizeof(TVertex));
+            return (int)GenerateVertexRemap(ref remappedResult[0], IntPtr.Zero, (nuint)remappedResult.Length, ptr, (nuint)vertices.Length, (nuint)sizeof(TVertex));
         }
     }
 
@@ -62,7 +62,7 @@ public static unsafe partial class Meshopt
     /// <param name="vertices"></param>
     /// <returns><inheritdoc cref="GenerateVertexRemap(ref uint, in uint, nuint, void*, nuint, nuint)"/></returns>
     public static int GenerateVertexRemap<TVertex>(Span<uint> destination, ReadOnlySpan<TVertex> vertices)
-        where TVertex : unmanaged
+        where TVertex : struct
     {
         destination = new uint[vertices.Length * 3];
 
@@ -109,7 +109,7 @@ public static unsafe partial class Meshopt
     /// <param name="vertices"></param>
     /// <param name="vertex_stride"></param>
     public static void GenerateShadowIndexBuffer<TVertex>(Span<uint> destination, ReadOnlySpan<uint> indices, ReadOnlySpan<TVertex> vertices, int vertex_stride)
-        where TVertex : unmanaged
+        where TVertex : struct
     {
         fixed(void* ptr = vertices)
         {
@@ -127,7 +127,7 @@ public static unsafe partial class Meshopt
     /// <param name="streams"></param>
     /// <param name="stream_count"></param>
     public static void GenerateShadowIndexBufferMulti<TVertex>(Span<uint> destination, ReadOnlySpan<uint> indices, int vertex_count, in MeshoptStream streams, int stream_count)
-        where TVertex : unmanaged
+        where TVertex : struct
     {
         GenerateShadowIndexBufferMulti(ref destination[0], indices[0], (nuint)indices.Length, (nuint)vertex_count, streams, (nuint)stream_count);
     }
@@ -168,7 +168,7 @@ public static unsafe partial class Meshopt
     /// <param name="vertices"></param>
     /// <param name="remap"></param>
     public static void RemapVertexBuffer<TVertex>(Span<TVertex> destination, ReadOnlySpan<TVertex> vertices, ReadOnlySpan<uint> remap)
-        where TVertex : unmanaged
+        where TVertex : struct
     {
         fixed (void* ptrDst = destination)
         fixed (void* ptrVert = vertices)
@@ -184,9 +184,9 @@ public static unsafe partial class Meshopt
     }
 
     /// <inheritdoc cref="RemapIndexBuffer(ref uint, in uint, nuint, in uint)"/>
-    public static void RemapIndexBuffer(Span<uint> destination, int index_count, ReadOnlySpan<uint> remap)
+    public static void RemapIndexBuffer(Span<uint> destination, ReadOnlySpan<uint> remap)
     {
-        RemapIndexBuffer(ref destination[0], IntPtr.Zero, (nuint)index_count, remap[0]);
+        RemapIndexBuffer(ref destination[0], IntPtr.Zero, (nuint)remap.Length, remap[0]);
     }
     #endregion
 
@@ -240,6 +240,20 @@ public static unsafe partial class Meshopt
     }
 
     /// <summary>
+    /// <inheritdoc cref="OptimizeOverdraw(ref uint, in uint, nuint, in float, nuint, nuint, float)"/>
+    /// </summary>
+    /// <param name="destination"></param>
+    /// <param name="indices"></param>
+    /// <param name="vertex_positions"></param>
+    /// <param name="vertex_count"></param>
+    /// <param name="vertex_positions_stride"></param>
+    /// <param name="threshold"></param>
+    public static void OptimizeOverdraw(Span<uint> destination, ReadOnlySpan<uint> indices, IntPtr vertex_positions, int vertex_count, int vertex_positions_stride, float threshold)
+    {
+        OptimizeOverdraw(ref destination[0], indices[0], (nuint)indices.Length, vertex_positions, (nuint)vertex_count, (nuint)vertex_positions_stride, threshold);
+    }
+
+    /// <summary>
     /// <inheritdoc cref="OptimizeVertexFetch(void*, ref uint, nuint, void*, nuint, nuint)"/>
     /// </summary>
     /// <typeparam name="TVertex"></typeparam>
@@ -248,7 +262,7 @@ public static unsafe partial class Meshopt
     /// <param name="vertices"></param>
     /// <returns></returns>
     public static int OptimizeVertexFetch<TVertex>(Span<TVertex> destination, Span<uint> indices, ReadOnlySpan<TVertex> vertices)
-        where TVertex : unmanaged
+        where TVertex : struct
     {
         fixed(void* ptrDst = destination)
         fixed(void* ptrVert = vertices)
@@ -304,7 +318,7 @@ public static unsafe partial class Meshopt
     /// <param name="buffer"></param>
     /// <returns></returns>
     public static int DecodeIndexBuffer<T>(Span<T> destination, int index_count, int index_size, ReadOnlySpan<byte> buffer)
-        where T : unmanaged
+        where T : struct
     {
         fixed(void* ptr = destination)
         {
@@ -344,7 +358,7 @@ public static unsafe partial class Meshopt
     /// <param name="buffer"></param>
     /// <returns></returns>
     public static int DecodeIndexSequence<T>(Span<T> destination, int index_count, int index_size, ReadOnlySpan<byte> buffer)
-        where T : unmanaged
+        where T : struct
     {
         fixed(void* ptr = destination)
         {
@@ -360,7 +374,7 @@ public static unsafe partial class Meshopt
     /// <param name="vertices"></param>
     /// <returns></returns>
     public static int EncodeVertexBuffer<TVertex>(Span<byte> buffer, ReadOnlySpan<TVertex> vertices)
-        where TVertex : unmanaged
+        where TVertex : struct
     {
         fixed(void* ptr = vertices)
         {
@@ -388,7 +402,7 @@ public static unsafe partial class Meshopt
     /// <param name="buffer"></param>
     /// <returns></returns>
     public static int DecodeVertexBuffer<TVertex>(Span<TVertex> destination, int vertex_count, ReadOnlySpan<byte> buffer)
-        where TVertex : unmanaged
+        where TVertex : struct
     {
         fixed(void* ptr = destination)
         {
@@ -406,7 +420,7 @@ public static unsafe partial class Meshopt
     /// <param name="buffer"></param>
     /// <param name="stride"></param>
     public static void DecodeFilterOct<T>(Span<T> buffer, int stride)
-        where T : unmanaged
+        where T : struct
     {
         fixed (void* ptr = buffer)
         {
@@ -421,7 +435,7 @@ public static unsafe partial class Meshopt
     /// <param name="buffer"></param>
     /// <param name="stride"></param>
     public static void DecodeFilterQuat<T>(Span<T> buffer, int stride)
-        where T : unmanaged
+        where T : struct
     {
         fixed(void* ptr = buffer)
         {
@@ -436,7 +450,7 @@ public static unsafe partial class Meshopt
     /// <param name="buffer"></param>
     /// <param name="stride"></param>
     public static void DecodeFilterExp<T>(Span<T> buffer, int stride)
-        where T : unmanaged
+        where T : struct
     {
         fixed(void* ptr = buffer)
         {
@@ -454,7 +468,7 @@ public static unsafe partial class Meshopt
     /// <param name="bits"></param>
     /// <param name="data"></param>
     public static void EncodeFilterOct<T>(Span<T> destination, int count, int stride, int bits, ReadOnlySpan<float> data)
-        where T : unmanaged
+        where T : struct
     {
         fixed(void* ptr = destination)
         {
@@ -472,7 +486,7 @@ public static unsafe partial class Meshopt
     /// <param name="bits"></param>
     /// <param name="data"></param>
     public static void EncodeFilterQuat<T>(Span<T> destination, int count, int stride, int bits, ReadOnlySpan<float> data)
-        where T : unmanaged
+        where T : struct
     {
         fixed (void* ptr = destination)
         {
@@ -491,7 +505,7 @@ public static unsafe partial class Meshopt
     /// <param name="data"></param>
     /// <param name="mode"></param>
     public static void EncodeFilterExp<T>(Span<T> destination, int count, int stride, int bits, ReadOnlySpan<float> data, MeshoptEncodeExpMode mode)
-        where T : unmanaged
+        where T : struct
     {
         fixed (void* ptr = destination)
         {
